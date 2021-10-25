@@ -5,6 +5,19 @@ resource "aws_vpc" "main" {
   }
 }
 
+resource "tls_private_key" "pk" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "kp" {
+  key_name   = "myKey"       # Create "myKey" to AWS!!
+  public_key = tls_private_key.pk.public_key_openssh
+
+  provisioner "local-exec" { # Create "myKey.pem" to your computer!!
+    command = "echo '${tls_private_key.pk.private_key_pem}' > ./myKey.pem"
+  }
+}
 
 #Create the 1 management, 2 public and 1 private subnet
 resource "aws_subnet" "NewMGTSubnet" {
@@ -266,7 +279,7 @@ resource "aws_instance" "WPWebInstance" {
   ami                                  = var.UbuntuRegionMap[var.aws_region]
   instance_type                        = "t2.micro"
 
-  key_name   = var.ServerKeyName
+  key_name   = "myKey"
   monitoring = false
 
   network_interface {
