@@ -47,10 +47,6 @@ variable "PrivateCIDR_Block" {
   default = "10.x.3.0/24"
 }
 
-variable "ServerKeyName" {
-  default = "awskeypair"
-}
-
 variable "fw_instance_size" {
   default = "m5.xlarge"
 }
